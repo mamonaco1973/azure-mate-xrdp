@@ -25,9 +25,10 @@ sudo apt-get install -y ubuntu-mate-desktop
 sudo apt-get install -y \
   mate-terminal \
   mate-utils \
-  xdg-utils
+  xdg-utils \
+  pcmanfm-qt 
 
-# ================================================================================
+# ==============================================================================./v ==
 # Step 3: REMOVE NETWORKMANAGER (Critical for Azure Stability)
 # ================================================================================
 # Lubuntu pulls in NetworkManager. Azure cannot use it reliably — it conflicts
@@ -54,3 +55,10 @@ EOF
 # 2. Mask services — belt & suspenders protection
 sudo systemctl mask NetworkManager.service 2>/dev/null || true
 sudo systemctl mask NetworkManager-wait-online.service 2>/dev/null || true
+
+# ================================================================================
+# Step 5: REMOVE LIBREOFFICE, It's unusable with XRDP and just bloat
+# ================================================================================
+
+sudo apt-get remove -y libreoffice* 
+sudo apt-get autoremove -y
