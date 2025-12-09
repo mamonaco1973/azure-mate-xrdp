@@ -1,10 +1,10 @@
 #!/bin/bash
 # ==============================================================================
-# Destroy Script for Lubuntu XRDP Project on Azure
+# Destroy Script for Mate XRDP Project on Azure
 # Purpose:
-#   - Removes all Lubuntu XRDP project resources deployed in Azure.
+#   - Removes all Mate XRDP project resources deployed in Azure.
 #   - Destroys server layer first, then directory layer.
-#   - Deletes the latest Lubuntu image and all older images.
+#   - Deletes the latest Mate image and all older images.
 # Notes:
 #   - This will permanently delete all deployed resources.
 #   - Assumes Azure CLI and Terraform are installed and authenticated.
@@ -13,17 +13,17 @@
 set -e
 
 # ------------------------------------------------------------------------------
-# Fetch latest Lubuntu image from the packer resource group
+# Fetch latest Mate image from the packer resource group
 # ------------------------------------------------------------------------------
-lubuntu_image_name=$(az image list \
-  --resource-group lubuntu-project-rg \
-  --query "[?starts_with(name, 'lubuntu_image')]|sort_by(@, &name)[-1].name" \
+mate_image_name=$(az image list \
+  --resource-group mate-project-rg \
+  --query "[?starts_with(name, 'mate_image')]|sort_by(@, &name)[-1].name" \
   --output tsv)
 
-echo "NOTE: Using latest image: $lubuntu_image_name"
+echo "NOTE: Using latest image: $mate_image_name"
 
-if [ -z "$lubuntu_image_name" ]; then
-  echo "ERROR: No Lubuntu image found in lubuntu-project-rg."
+if [ -z "$mate_image_name" ]; then
+  echo "ERROR: No Mate image found in mate-project-rg."
   exit 1
 fi
 
@@ -33,7 +33,7 @@ fi
 cd 03-servers
 
 vault=$(az keyvault list \
-  --resource-group lubuntu-network-rg \
+  --resource-group mate-network-rg \
   --query "[?starts_with(name, 'ad-key-vault')].name | [0]" \
   --output tsv)
 
@@ -42,22 +42,22 @@ echo "NOTE: Using Key Vault: $vault"
 terraform init
 terraform destroy \
   -var="vault_name=$vault" \
-  -var="lubuntu_image_name=$lubuntu_image_name" \
+  -var="mate_image_name=$mate_image_name" \
   -auto-approve
 
 cd ..
 
 # ------------------------------------------------------------------------------
-# Delete all Lubuntu images in lubuntu-project-rg
+# Delete all Mate images in mate-project-rg
 # ------------------------------------------------------------------------------
 az image list \
-  --resource-group lubuntu-project-rg \
+  --resource-group mate-project-rg \
   --query "[].name" \
   -o tsv | while read -r IMAGE; do
     echo "Deleting image: $IMAGE"
     az image delete \
       --name "$IMAGE" \
-      --resource-group lubuntu-project-rg \
+      --resource-group mate-project-rg \
       || echo "Failed to delete $IMAGE; skipping"
 done
 
@@ -70,4 +70,4 @@ terraform init
 terraform destroy -auto-approve
 
 cd ..
-echo "NOTE: Lubuntu XRDP project resources have been successfully destroyed."
+echo "NOTE: Mate XRDP project resources have been successfully destroyed."
