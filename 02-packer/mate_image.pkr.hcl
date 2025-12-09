@@ -107,9 +107,9 @@ build {
     execute_command = "sudo -E bash '{{.Path}}'"
   }
 
-  # Lubuntu desktop
+  # MATE desktop
   provisioner "shell" {
-    script          = "./lubuntu.sh"
+    script          = "./mate.sh"
     execute_command = "sudo -E bash '{{.Path}}'"
   }
 

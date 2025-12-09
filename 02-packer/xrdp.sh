@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # ================================================================================
-# XRDP Installation and XFCE Session Configuration Script
+# XRDP Installation and MATE Session Configuration Script
 # ================================================================================
 # Description:
 #   Installs XRDP and replaces the default /etc/xrdp/startwm.sh script so that
@@ -12,7 +12,7 @@ set -euo pipefail
 #
 # Notes:
 #   - Uses apt-get for predictable automation behavior.
-#   - Writes a clean startwm.sh that invokes startxfce4.
+#   - Writes a clean startwm.sh that invokes mate-session.
 #   - Script exits on any error due to 'set -euo pipefail'.
 # ================================================================================
 
@@ -22,9 +22,8 @@ set -euo pipefail
 sudo apt-get update -y
 sudo apt-get install -y xrdp
 
-
 # ================================================================================
-# Step 2: Replace /etc/xrdp/startwm.sh with LXQt session launcher
+# Step 2: Replace /etc/xrdp/startwm.sh with MATE session launcher
 # ================================================================================
 sudo tee /etc/xrdp/startwm.sh >/dev/null <<'EOF'
 #!/bin/sh
@@ -43,14 +42,8 @@ if test -r ~/.profile; then
     . ~/.profile
 fi
 
-# -------------------------------------------------------------------------------
-# Force LXQt desktop environment for all XRDP sessions
-# -------------------------------------------------------------------------------
-export DESKTOP_SESSION=lxqt
-export XDG_SESSION_DESKTOP=lxqt
-export XDG_CURRENT_DESKTOP=lxqt
-
-exec startlxqt
+# Start MATE session
+mate-session
 
 EOF
 

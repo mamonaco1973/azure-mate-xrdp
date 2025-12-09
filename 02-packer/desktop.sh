@@ -7,10 +7,10 @@ set -euo pipefail
 # Description:
 #   Creates trusted symlinks for selected applications inside /etc/skel/Desktop.
 #   These symlinks ensure that all newly created users receive desktop icons
-#   without the XFCE/LXQT "untrusted application launcher" warning dialog.
+#   without the MATE "untrusted application launcher" warning dialog.
 #
 # Notes:
-#   - Works for XFCE, MATE, LXQT and most desktop environments using .desktop files.
+#   - Works for XFCE, MATE, and most desktop environments using .desktop files.
 #   - Only affects *new* users created after this script runs.
 #   - Symlinks are used instead of copied launchers to preserve trust flags.
 # ================================================================================
@@ -23,6 +23,7 @@ APPS=(
   /usr/share/applications/firefox.desktop
   /usr/share/applications/code.desktop
   /usr/share/applications/postman.desktop
+  /usr/share/applications/mate-terminal.desktop
   /usr/share/applications/onlyoffice-desktopeditors.desktop
 )
 
@@ -51,77 +52,7 @@ done
 
 echo "NOTE: All new users will receive these desktop icons without trust prompts."
 
-# ================================================================================
-# Step 3: Lubuntu configurations for XRDP
-# ================================================================================
+rm -f -r /etc/xdg/autostart/mate-power-manager.desktop
 
-sudo mkdir -p /etc/xdg/lxqt
-
-# Specify default applications and window manager
-
-sudo tee /etc/xdg/lxqt/session.conf >/dev/null <<'EOF'
-[Environment]
-BROWSER=firefox
-TERM=qterminal
-[General]
-window_manager=openbox
-EOF
-
-# Configure LXQt panel with essential plugins and quicklaunchers
-# Turned off problematic plugins for XRDP sessions
-
-sudo tee /etc/xdg/lxqt/panel.conf >/dev/null <<'EOF'
-[General]
-iconTheme=Papirus-Dark
-
-[kbindicator]
-alignment=Right
-type=kbindicator
-
-[quicklaunch]
-alignment=Left
-apps\1\desktop=/usr/share/applications/pcmanfm-qt.desktop
-apps\2\desktop=/usr/share/applications/qterminal.desktop
-apps\3\desktop=/usr/share/applications/featherpad.desktop
-apps\size=3
-type=quicklaunch
-
-[quicklaunch2]
-alignment=left
-apps\1\desktop=/usr/share/applications/lxqt-leave.desktop
-apps\size=1
-type=quicklaunch
-
-[panel1]
-plugins=mainmenu, showdesktop, desktopswitch, quicklaunch, taskbar, tray, statusnotifier, worldclock, quicklaunch2
-
-[taskbar]
-buttonWidth=200
-raiseOnCurrentDesktop=true
-EOF
-
-# Configure PCManFM-Qt to show Desktop shortcuts and set default wallpaper
-
-sudo tee /etc/xdg/pcmanfm-qt/lxqt/settings.conf >/dev/null <<'EOF'
-[Desktop]
-DesktopShortcuts=Home
-Wallpaper=/usr/share/lxqt/themes/debian/wallpaper.svg
-WallpaperMode=zoom
-WallpaperRandomize=false
-
-[System]
-Archiver=xarchiver
-FallbackIconThemeName=oxygen
-Terminal=qterminal
-
-[Window]
-AlwaysShowTabs=true
-
-[Behavior]
-QuickExec=true
-EOF
-
-# Remove powermanagement to prevent conflicts with XRDP sessions
-
-sudo apt-get purge -y lxqt-powermanagement
-sudo apt-get autoremove -y
+sudo sed -i 's/enabled=1/enabled=0/' /etc/default/apport
+sudo systemctl disable --now apport.service

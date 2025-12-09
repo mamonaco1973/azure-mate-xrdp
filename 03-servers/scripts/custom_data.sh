@@ -215,6 +215,10 @@ git clone https://github.com/mamonaco1973/azure-lubuntu-xrdp.git
 chmod -R 775 azure-lubuntu-xrdp
 chgrp -R mcloud-users azure-lubuntu-xrdp
 
+git clone https://github.com/mamonaco1973/azure-mate-xrdp.git
+chmod -R 775 azure-mate-xrdp
+chgrp -R mcloud-users azure-mate-xrdp
+
 git clone https://github.com/mamonaco1973/aws-setup.git
 chmod -R 775 aws-setup
 chgrp -R mcloud-users aws-setup
