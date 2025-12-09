@@ -67,7 +67,7 @@ variable "location" {
 variable "vm_size" {
   description = "Builder VM size"
   type        = string
-  default     = "Standard_D4s_v3"
+  default     = "Standard_D4s_v5"
 }
 
 # ------------------------------------------------------------------------------
