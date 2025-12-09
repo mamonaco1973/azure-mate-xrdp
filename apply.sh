@@ -1,12 +1,12 @@
 #!/bin/bash
 # ==============================================================================
-# Build Script for Lubuntu XRDP Project on Azure
+# Build Script for MATE XRDP Project on Azure
 # Purpose:
 #   - Validates the environment and prerequisites before deployment.
 #   - Deploys the project in two phases:
 #       1. Directory layer: Key Vault, Mini-AD and base infra.
-#       2. Server layer: Lubuntu VM, AD Admin VM, and secrets.
-#   - Uses Packer to build the Lubuntu image before server deployment.
+#       2. Server layer: MATE VM, AD Admin VM, and secrets.
+#   - Uses Packer to build the MATE image before server deployment.
 # Notes:
 #   - Assumes Azure CLI and Terraform are installed and logged in.
 #   - Assumes check_env.sh validates required vars and tools.
@@ -39,7 +39,7 @@ fi
 cd ..
 
 # ------------------------------------------------------------------------------
-# Build Lubuntu image with Packer
+# Build MATE image with Packer
 # ------------------------------------------------------------------------------
 cd 02-packer
 
@@ -49,28 +49,28 @@ packer build \
  -var="client_secret=$ARM_CLIENT_SECRET" \
  -var="subscription_id=$ARM_SUBSCRIPTION_ID" \
  -var="tenant_id=$ARM_TENANT_ID" \
- -var="resource_group=lubuntu-project-rg" \
- lubuntu_image.pkr.hcl
+ -var="resource_group=mate-project-rg" \
+ mate_image.pkr.hcl
 
 cd ..
 
 # ------------------------------------------------------------------------------
-# Deploy server layer (AD Admin VM and Lubuntu VM)
+# Deploy server layer (AD Admin VM and MATE VM)
 # ------------------------------------------------------------------------------
 cd 03-servers
 
 # ------------------------------------------------------------------------------
-# Fetch latest Lubuntu image from packer resource group
+# Fetch latest MATE image from packer resource group
 # ------------------------------------------------------------------------------
-lubuntu_image_name=$(az image list \
-  --resource-group lubuntu-project-rg \
-  --query "[?starts_with(name, 'lubuntu_image')]|sort_by(@, &name)[-1].name" \
+mate_image_name=$(az image list \
+  --resource-group mate-project-rg \
+  --query "[?starts_with(name, 'mate_image')]|sort_by(@, &name)[-1].name" \
   --output tsv)
 
-echo "NOTE: Using latest Lubuntu image: $lubuntu_image_name"
+echo "NOTE: Using latest MATE image: $mate_image_name"
 
-if [ -z "$lubuntu_image_name" ]; then
-  echo "ERROR: No Lubuntu image found in lubuntu-project-rg."
+if [ -z "$mate_image_name" ]; then
+  echo "ERROR: No MATE image found in mate-project-rg."
   exit 1
 fi
 
@@ -78,7 +78,7 @@ fi
 # Discover Key Vault created in Phase 1
 # ------------------------------------------------------------------------------
 vault=$(az keyvault list \
-  --resource-group lubuntu-network-rg \
+  --resource-group mate-network-rg \
   --query "[?starts_with(name, 'ad-key-vault')].name | [0]" \
   --output tsv)
 
@@ -91,7 +91,7 @@ echo "NOTE: Using Key Vault: $vault"
 terraform init
 terraform apply \
   -var="vault_name=$vault" \
-  -var="lubuntu_image_name=$lubuntu_image_name" \
+  -var="mate_image_name=$mate_image_name" \
   -auto-approve
 
 cd ..

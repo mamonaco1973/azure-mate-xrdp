@@ -1,5 +1,5 @@
 # ==============================================================================
-# Linux VM deployment with Ubuntu account (Lubuntu instance)
+# Linux VM deployment with Ubuntu account (Mate instance)
 # ------------------------------------------------------------------------------
 # Generates secure credentials for the 'ubuntu' user, stores them in Key Vault,
 # allocates a public IP, provisions a NIC, deploys the VM, and assigns the Key
@@ -29,47 +29,47 @@ resource "azurerm_key_vault_secret" "ubuntu_secret" {
 }
 
 # ------------------------------------------------------------------------------
-# Allocate a public IP address for the Lubuntu VM
+# Allocate a public IP address for the Mate VM
 # ------------------------------------------------------------------------------
-resource "azurerm_public_ip" "lubuntu_public_ip" {
-  name                = "lubuntu-public-ip"
-  location            = data.azurerm_resource_group.lubuntu.location
-  resource_group_name = data.azurerm_resource_group.lubuntu.name
-  domain_name_label   = "lubuntu-${random_string.vm_suffix.result}"
+resource "azurerm_public_ip" "mate_public_ip" {
+  name                = "mate-public-ip"
+  location            = data.azurerm_resource_group.mate.location
+  resource_group_name = data.azurerm_resource_group.mate.name
+  domain_name_label   = "mate-${random_string.vm_suffix.result}"
   allocation_method   = "Static"
   sku                 = "Standard"
 }
 
 # ------------------------------------------------------------------------------
-# Create a NIC for the Lubuntu VM and associate the public IP
+# Create a NIC for the Mate VM and associate the public IP
 # ------------------------------------------------------------------------------
-resource "azurerm_network_interface" "lubuntu_nic" {
-  name                = "lubuntu-nic"
-  location            = data.azurerm_resource_group.lubuntu.location
-  resource_group_name = data.azurerm_resource_group.lubuntu.name
+resource "azurerm_network_interface" "mate_nic" {
+  name                = "mate-nic"
+  location            = data.azurerm_resource_group.mate.location
+  resource_group_name = data.azurerm_resource_group.mate.name
 
   ip_configuration {
     name                          = "internal"
     subnet_id                     = data.azurerm_subnet.vm_subnet.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.lubuntu_public_ip.id
+    public_ip_address_id          = azurerm_public_ip.mate_public_ip.id
   }
 }
 
 # ------------------------------------------------------------------------------
-# Provision the Lubuntu Linux virtual machine
+# Provision the Mate Linux virtual machine
 # ------------------------------------------------------------------------------
-resource "azurerm_linux_virtual_machine" "lubuntu_instance" {
-  name                = "lubuntu-${random_string.vm_suffix.result}"
-  location            = data.azurerm_resource_group.lubuntu.location
-  resource_group_name = data.azurerm_resource_group.lubuntu.name
+resource "azurerm_linux_virtual_machine" "mate_instance" {
+  name                = "mate-${random_string.vm_suffix.result}"
+  location            = data.azurerm_resource_group.mate.location
+  resource_group_name = data.azurerm_resource_group.mate.name
   size                = "Standard_D4s_v3"
   admin_username      = "ubuntu"
   admin_password      = random_password.ubuntu_password.result
   disable_password_authentication = false
 
   network_interface_ids = [
-    azurerm_network_interface.lubuntu_nic.id
+    azurerm_network_interface.mate_nic.id
   ]
 
   os_disk {
@@ -77,7 +77,7 @@ resource "azurerm_linux_virtual_machine" "lubuntu_instance" {
     storage_account_type = "StandardSSD_LRS"
   }
 
-  source_image_id = data.azurerm_image.lubuntu_image.id
+  source_image_id = data.azurerm_image.mate_image.id
 
   boot_diagnostics {
     storage_account_uri = null
@@ -106,5 +106,5 @@ resource "azurerm_linux_virtual_machine" "lubuntu_instance" {
 resource "azurerm_role_assignment" "vm_lnx_key_vault_secrets_user" {
   scope                = data.azurerm_key_vault.ad_key_vault.id
   role_definition_name = "Key Vault Secrets User"
-  principal_id         = azurerm_linux_virtual_machine.lubuntu_instance.identity[0].principal_id
+  principal_id         = azurerm_linux_virtual_machine.mate_instance.identity[0].principal_id
 }

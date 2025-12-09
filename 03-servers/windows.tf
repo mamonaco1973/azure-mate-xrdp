@@ -42,8 +42,8 @@ resource "azurerm_key_vault_secret" "win_adminuser_secret" {
 # ------------------------------------------------------------------------------
 resource "azurerm_public_ip" "windows_vm_public_ip" {
   name                = "windows-vm-public-ip"
-  location            = data.azurerm_resource_group.lubuntu.location
-  resource_group_name = data.azurerm_resource_group.lubuntu.name
+  location            = data.azurerm_resource_group.mate.location
+  resource_group_name = data.azurerm_resource_group.mate.name
   allocation_method   = "Static"
   sku                 = "Standard"
   domain_name_label   = "win-ad-${random_string.vm_suffix.result}"
@@ -54,8 +54,8 @@ resource "azurerm_public_ip" "windows_vm_public_ip" {
 # ------------------------------------------------------------------------------
 resource "azurerm_network_interface" "windows_vm_nic" {
   name                = "windows-vm-nic"
-  location            = data.azurerm_resource_group.lubuntu.location
-  resource_group_name = data.azurerm_resource_group.lubuntu.name
+  location            = data.azurerm_resource_group.mate.location
+  resource_group_name = data.azurerm_resource_group.mate.name
 
   ip_configuration {
     name                          = "internal"
@@ -70,8 +70,8 @@ resource "azurerm_network_interface" "windows_vm_nic" {
 # ------------------------------------------------------------------------------
 resource "azurerm_windows_virtual_machine" "windows_ad_instance" {
   name                = "win-ad-${random_string.vm_suffix.result}"
-  location            = data.azurerm_resource_group.lubuntu.location
-  resource_group_name = data.azurerm_resource_group.lubuntu.name
+  location            = data.azurerm_resource_group.mate.location
+  resource_group_name = data.azurerm_resource_group.mate.name
   
   size                = "Standard_DS1_v2" # Small size for demos
   admin_username      = "adminuser"
@@ -131,7 +131,7 @@ resource "azurerm_virtual_machine_extension" "join_script" {
 
   depends_on = [
     azurerm_role_assignment.vm_win_key_vault_secrets_user,
-    azurerm_linux_virtual_machine.lubuntu_instance
+    azurerm_linux_virtual_machine.mate_instance
   ]
 }
 

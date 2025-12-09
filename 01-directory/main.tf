@@ -38,7 +38,7 @@ data "azurerm_client_config" "current" {}
 variable "network_resource_group_name" {
   description = "The name of the Azure Networking Resource Group"
   type        = string
-  default     = "lubuntu-network-rg"
+  default     = "mate-network-rg"
 }
 
 # --------------------------------------------------------------------------------------------------
@@ -64,7 +64,7 @@ resource "azurerm_resource_group" "ad" {
 variable "servers_resource_group_name" {
   description = "The name of the Azure Servers Resource Group"
   type        = string
-  default     = "lubuntu-project-rg"
+  default     = "mate-project-rg"
 }
 
 # --------------------------------------------------------------------------------------------------

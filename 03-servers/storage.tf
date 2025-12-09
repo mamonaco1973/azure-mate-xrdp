@@ -20,8 +20,8 @@ resource "random_string" "storage_name" {
 # ------------------------------------------------------------------------------
 resource "azurerm_storage_account" "scripts_storage" {
   name                     = "vmscripts${random_string.storage_name.result}" # Unique name
-  resource_group_name      = data.azurerm_resource_group.lubuntu.name
-  location                 = data.azurerm_resource_group.lubuntu.location
+  resource_group_name      = data.azurerm_resource_group.mate.name
+  location                 = data.azurerm_resource_group.mate.location
   account_tier             = "Standard"  # Cost-effective storage
   account_replication_type = "LRS"       # Local redundancy
 }
@@ -43,7 +43,7 @@ locals {
   ad_join_script = templatefile("./scripts/ad_join.ps1.template", {
     vault_name  = data.azurerm_key_vault.ad_key_vault.name
     domain_fqdn = "mcloud.mikecloud.com"
-    nfs_gateway = azurerm_network_interface.lubuntu_nic.ip_configuration[0].private_ip_address
+    nfs_gateway = azurerm_network_interface.mate_nic.ip_configuration[0].private_ip_address
   })
 }
 

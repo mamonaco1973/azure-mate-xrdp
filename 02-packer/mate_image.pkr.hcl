@@ -74,7 +74,7 @@ variable "vm_size" {
 # Source Block: Azure Image Builder
 # - Defines base Ubuntu image and build parameters
 # ------------------------------------------------------------------------------
-source "azure-arm" "lubuntu_image" {
+source "azure-arm" "mate_image" {
   client_id       = var.client_id
   client_secret   = var.client_secret
   subscription_id = var.subscription_id
@@ -90,7 +90,7 @@ source "azure-arm" "lubuntu_image" {
   os_type         = "Linux"
   ssh_username    = "ubuntu"
 
-  managed_image_name = "lubuntu_image_${local.timestamp}"
+  managed_image_name = "mate_image_${local.timestamp}"
   managed_image_resource_group_name = var.resource_group
 }
 
@@ -99,7 +99,7 @@ source "azure-arm" "lubuntu_image" {
 # - Executes each setup script inside the build VM
 # ------------------------------------------------------------------------------
 build {
-  sources = ["source.azure-arm.lubuntu_image"]
+  sources = ["source.azure-arm.mate_image"]
 
   # Base packages
   provisioner "shell" {
