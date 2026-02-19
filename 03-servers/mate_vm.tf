@@ -72,10 +72,10 @@ resource "azurerm_linux_virtual_machine" "mate_instance" {
     azurerm_network_interface.mate_nic.id
   ]
 
-  os_disk {
-    caching              = "ReadWrite"
-    storage_account_type = "StandardSSD_LRS"
-  }
+ os_disk {
+  caching              = "ReadWrite"
+  storage_account_type = "Premium_LRS"
+ }
 
   source_image_id = data.azurerm_image.mate_image.id
 
