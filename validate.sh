@@ -68,14 +68,14 @@ printf "%-28s %s\n" "NOTE: Resource Group:" "${RESOURCE_GROUP}"
 echo ""
 
 if [ -z "${windows_fqdn}" ]; then
-  printf "%-28s %s\n" "ERROR: Windows RDP Host:" \
+  printf "%-28s %s\n" "ERROR: Windows RDP FQDN:" \
     "No FQDN found (Public IP: ${WINDOWS_PIP_NAME})"
 else
-  printf "%-28s %s\n" "NOTE: Windows RDP Host:" "${windows_fqdn}"
+  printf "%-28s %s\n" "NOTE: Windows RDP FQDN:" "${windows_fqdn}"
 fi
 
 if [ -z "${mate_fqdn}" ]; then
-  printf "%-28s %s\n" "ERROR: MATE Host:" \
+  printf "%-28s %s\n" "ERROR: MATE FQDN:" \
     "No FQDN found (Public IP: ${MATE_PIP_NAME})"
   echo ""
   exit 1
