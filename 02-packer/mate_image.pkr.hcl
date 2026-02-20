@@ -93,6 +93,7 @@ source "azure-arm" "mate_image" {
   managed_image_name = "mate_image_${local.timestamp}"
   managed_image_resource_group_name = var.resource_group
   managed_image_storage_account_type = "Premium_LRS"
+  os_disk_size_gb                    = 128
 }
 
 # ------------------------------------------------------------------------------
