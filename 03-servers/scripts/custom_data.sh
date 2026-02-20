@@ -32,7 +32,7 @@ admin_password=$(echo "$secretsJson" | jq -r '.password')
 admin_username="${netbios}\\Admin"
 
 echo -e "$admin_password" | sudo /usr/sbin/realm join --membership-software=samba \
-    -U "$admin_username" ${domain_fqdn} --verbose >> /root/join.log 2>&1
+    -U "$admin_username" ${domain_fqdn} --verbose 
 
 # SSSD config
 sudo sed -i 's/use_fully_qualified_names = True/use_fully_qualified_names = False/g' \
