@@ -56,8 +56,8 @@ echo "NOTE: /etc/xrdp/startwm.sh replaced and permissions set."
 # ================================================================================
 # Step 4: Enable XRDP service
 # ================================================================================
-sudo systemctl enable xrdp
 sudo sed -i 's/^max_bpp=32/max_bpp=16/' /etc/xrdp/xrdp.ini
+sudo systemctl enable xrdp
 echo "NOTE: XRDP installation and configuration complete."
 
 # ---------------------------------------------------------------------------------
