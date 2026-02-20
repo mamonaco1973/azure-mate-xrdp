@@ -9,7 +9,6 @@
 # ---------------------------------------------------------------------------------
 
 mkdir -p /nfs
-#mkdir -p /nfs/home
 
 cat <<EOF | sudo tee -a /etc/fstab > /dev/null
 ${storage_account}.file.core.windows.net:/${storage_account}/nfs      /nfs        aznfs defaults,vers=4.1,sec=sys,nolock,proto=tcp,_netdev,nofail,bg 0 0
@@ -20,10 +19,10 @@ systemctl daemon-reload
 # Try mounts now
 
 mount /nfs || true
-#mkdir -p /nfs/home
+mkdir -p /nfs/home
 mkdir -p /nfs/data
-#mv /home /home.local
-#ln -s /nfs/home /home
+mv /home /home.local
+ln -s /nfs/home /home
 
 # ---------------------------------------------------------------------------------
 # Section 2: Configure AD as the identity provider
