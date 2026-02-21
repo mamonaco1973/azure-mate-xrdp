@@ -22,8 +22,10 @@ echo -e "Package: snapd\nPin: release *\nPin-Priority: -10" \
 systemctl stop unattended-upgrades || true
 systemctl stop apt-daily.service apt-daily-upgrade.service || true
 
-sudo apt-get update -y
-sudo apt-get upgrade -y
+apt-get update -y
+apt-get upgrade -y
+apt-get autoremove -y
+apt-get clean
 
 # ------------------------------------------------------------------------------------------
 # Install Core AD, NSS, Samba, Kerberos, NFS, and Utility Packages
