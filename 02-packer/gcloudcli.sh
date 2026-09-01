@@ -39,7 +39,11 @@ if ! command -v gcloud >/dev/null 2>&1; then
   # Step 4: Update package index and install the SDK
   # ============================================================================
   sudo apt-get update -y
-  sudo apt-get install -y google-cloud-sdk
+  # Google dropped google-cloud-sdk from the cloud-sdk repo in favour of
+  # google-cloud-cli, with no transitional package -- the old name now
+  # fails with 'has no installation candidate'. Repo, key and .list name
+  # are unchanged.
+  sudo apt-get install -y google-cloud-cli
 
   echo "NOTE: Google Cloud SDK installation complete."
 else
