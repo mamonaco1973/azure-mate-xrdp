@@ -2,10 +2,10 @@
 set -euo pipefail
 
 # ================================================================================
-# Ubuntu 24.04 + MATE Desktop Installation Script
+# Ubuntu 26.04 + MATE Desktop Installation Script
 # ================================================================================
 # Description:
-#   Installs the full MATE desktop environment on Ubuntu 24.04. 
+#   Installs the full MATE desktop environment on Ubuntu 26.04. 
 #
 # Notes:
 #   - Uses apt-get for stable automation behavior.

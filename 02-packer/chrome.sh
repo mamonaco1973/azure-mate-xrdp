@@ -5,7 +5,7 @@ set -e
 # Google Chrome Installation Script (DEB Package, No Snap)
 # ================================================================================
 # Description:
-#   Installs Google Chrome Stable on Ubuntu 24.04 using Google's official
+#   Installs Google Chrome Stable on Ubuntu 26.04 using Google's official
 #   APT repository. The script installs prerequisite packages, registers the
 #   signing key, configures the repository, updates the package index, and
 #   installs Chrome using a stable scripting interface (apt-get).

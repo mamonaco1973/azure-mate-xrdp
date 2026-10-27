@@ -20,8 +20,8 @@ set -euo pipefail
 # ================================================================================
 APPS=(
   /usr/share/applications/google-chrome.desktop
-  /usr/share/applications/firefox.desktop
-  /usr/share/applications/code.desktop
+  /var/lib/snapd/desktop/applications/firefox_firefox.desktop
+  /usr/share/applications/com.microsoft.VSCode.desktop
   /usr/share/applications/postman.desktop
   /usr/share/applications/mate-terminal.desktop
   /usr/share/applications/onlyoffice-desktopeditors.desktop

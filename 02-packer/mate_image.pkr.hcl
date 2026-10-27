@@ -1,9 +1,9 @@
 # ==============================================================================
-# Packer Build: Lubuntu Image for Azure (Ubuntu 24.04 LTS)
+# Packer Build: MATE Image for Azure (Ubuntu 26.04 LTS)
 #------------------------------------------------------------------------------
 # Purpose:
-#   - Builds a custom Azure Managed Image with Lubuntu and XRDP
-#   - Starts from Canonical Ubuntu 24.04 LTS
+#   - Builds a custom Azure Managed Image with MATE and XRDP
+#   - Starts from Canonical Ubuntu 26.04 LTS
 #   - Installs desktop env, tools, browsers, and dev utilities
 #   - Produces a timestamped image for VM or VMSS deployments
 # ==============================================================================
@@ -81,7 +81,7 @@ source "azure-arm" "mate_image" {
   tenant_id       = var.tenant_id
 
   image_publisher = "Canonical"
-  image_offer     = "ubuntu-24_04-lts"
+  image_offer     = "ubuntu-26_04-lts"
   image_sku       = "server"
   image_version   = "latest"
 

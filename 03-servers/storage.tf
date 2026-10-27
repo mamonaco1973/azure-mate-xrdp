@@ -60,8 +60,7 @@ resource "local_file" "ad_join_rendered" {
 # ------------------------------------------------------------------------------
 resource "azurerm_storage_blob" "ad_join_script" {
   name                   = "ad-join.ps1"
-  storage_account_name   = azurerm_storage_account.scripts_storage.name
-  storage_container_name = azurerm_storage_container.scripts.name
+  storage_container_id   = azurerm_storage_container.scripts.id
   type                   = "Block" # Block blob for discrete files
   source                 = local_file.ad_join_rendered.filename
 

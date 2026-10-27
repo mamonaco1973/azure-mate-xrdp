@@ -19,6 +19,13 @@ ${storage_account}.file.core.windows.net:/${storage_account}/nfs      /nfs      
 EOF
 
 systemctl daemon-reload
+
+# The private endpoint's DNS record can lag this VM's first boot; wait for it.
+for i in $(seq 1 30); do
+  getent hosts ${storage_account}.file.core.windows.net >/dev/null && break
+  echo "waiting for NFS endpoint DNS ($i/30)"
+  sleep 10
+done
 mount /nfs || true
 mkdir -p /nfs/home
 mkdir -p /nfs/data
@@ -29,10 +36,20 @@ ln -s /nfs/home /home
 az login --identity --allow-no-subscriptions
 secretsJson=$(az keyvault secret show --name admin-credentials --vault-name ${vault_name} --query value -o tsv)
 admin_password=$(echo "$secretsJson" | jq -r '.password')
-admin_username="${netbios}\\Admin"
+# Bare account name: given MCLOUD\Admin, realmd on 26.04 asks Kerberos for
+# Admin@MCLOUD (the NetBIOS name) and the join fails ("Cannot contact any KDC").
+admin_username="Admin"
 
-echo -e "$admin_password" | sudo /usr/sbin/realm join --membership-software=samba \
-    -U "$admin_username" ${domain_fqdn} --verbose 
+# The DC can still be settling when this VM boots, so retry the join.
+for i in $(seq 1 10); do
+  if echo -e "$admin_password" | sudo /usr/sbin/realm join --membership-software=samba \
+      -U "$admin_username" ${domain_fqdn} --verbose; then
+    break
+  fi
+  [ "$i" -eq 10 ] && exit 1
+  echo "realm join failed ($i/10); retrying"
+  sleep 30
+done
 
 # SSSD config
 sudo sed -i 's/use_fully_qualified_names = True/use_fully_qualified_names = False/g' \

@@ -83,3 +83,27 @@ fi
 
 printf "%-28s %s\n" "NOTE: MATE Host:" "${mate_fqdn}"
 echo ""
+# ------------------------------------------------------------------------------
+# Sign-in
+# ------------------------------------------------------------------------------
+# jsmith is in mcloud-users and linux-admins (sudo on the desktop).
+vault="$(az keyvault list \
+  --resource-group "mate-network-rg" \
+  --query "[?starts_with(name, 'ad-key-vault')].name | [0]" \
+  --output tsv 2>/dev/null | az_trim || true)"
+
+jsmith_password="$(az keyvault secret show \
+  --vault-name "${vault}" \
+  --name "jsmith-credentials" \
+  --query value --output tsv 2>/dev/null | jq -r .password 2>/dev/null || true)"
+
+if [ -z "${jsmith_password}" ]; then
+  printf "%-28s %s\n" "ERROR: Sign in:" \
+    "Not found (secret jsmith-credentials in ${vault:-ad-key-vault-*})"
+else
+  printf "%-28s %s\n" "NOTE: Sign in:" "jsmith / ${jsmith_password}"
+fi
+printf "%-28s %s\n" "" "Desktop: jsmith. Windows: MCLOUD\\jsmith."
+printf "%-28s %s\n" "" "Other users: <user>-credentials"
+printf "%-28s %s\n" "" "in Key Vault ${vault}."
+echo ""

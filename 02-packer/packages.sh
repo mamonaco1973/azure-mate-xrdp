@@ -8,16 +8,10 @@ set -euo pipefail
 #   - Samba utilities required for Kerberos, NTLM, and domain discovery
 # ==========================================================================================
 
-# ------------------------------------------------------------------------------------------
-# XRDP has issues with snap so disable and remove it first
-# ------------------------------------------------------------------------------------------
-
 export DEBIAN_FRONTEND=noninteractive
-sudo snap remove --purge core22
-sudo snap remove --purge snapd
-sudo apt-get purge -y snapd
-echo -e "Package: snapd\nPin: release *\nPin-Priority: -10" \
- | sudo tee /etc/apt/preferences.d/nosnap.pref
+
+# Snap stays installed: Firefox is a snap on 26.04, and the XAUTHORITY
+# export in /etc/xrdp/startwm.sh (xrdp.sh) lets snaps open windows under XRDP.
 
 systemctl stop unattended-upgrades || true
 systemctl stop apt-daily.service apt-daily-upgrade.service || true
@@ -49,11 +43,12 @@ apt-get install -y less unzip realmd sssd-ad sssd-tools libnss-sss \
 # Install AZ NFS Helper
 # ---------------------------------------------------------------------------------
 
-curl -sSL https://packages.microsoft.com/keys/microsoft.asc | sudo gpg --dearmor --yes \
-  -o /etc/apt/keyrings/microsoft.gpg
+# Microsoft's 26.04 repository is signed with the 2025 key, not microsoft.asc.
+curl -sSL https://packages.microsoft.com/keys/microsoft-2025.asc | sudo gpg --dearmor --yes \
+  -o /etc/apt/keyrings/microsoft-2025.gpg
 
-echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/microsoft.gpg] \
-https://packages.microsoft.com/ubuntu/22.04/prod jammy main" \
+echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/microsoft-2025.gpg] \
+https://packages.microsoft.com/ubuntu/26.04/prod resolute main" \
   | sudo tee /etc/apt/sources.list.d/aznfs.list
 
 echo "aznfs aznfs/enable_autoupdate boolean true" | sudo debconf-set-selections

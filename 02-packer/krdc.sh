@@ -2,10 +2,10 @@
 set -e
 
 # ================================================================================
-# KRDC Installation Script (Ubuntu 24.04)
+# KRDC Installation Script (Ubuntu 26.04)
 # ================================================================================
 # Description:
-#   Installs the KDE Remote Desktop Client (KRDC) on Ubuntu 24.04 for use as a
+#   Installs the KDE Remote Desktop Client (KRDC) on Ubuntu 26.04 for use as a
 #   lightweight, stable RDP client alternative to Remmina on Xfce/Xubuntu builds.
 #
 # Notes:

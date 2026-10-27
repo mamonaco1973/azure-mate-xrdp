@@ -26,7 +26,7 @@ resource "azurerm_storage_account" "nfs_storage_account" {
   account_kind                 = "FileStorage"
   account_tier                 = "Premium"
   account_replication_type     = "LRS"
-  public_network_access_enabled = false
+  public_network_access         = "Disabled"
 }
 
 # ==============================================================================
@@ -63,8 +63,7 @@ resource "azurerm_private_dns_zone" "file" {
 # Links the private DNS zone to the AD VNet so VMs resolve Azure Files privately.
 resource "azurerm_private_dns_zone_virtual_network_link" "file_link" {
   name                  = "vnet-link"
-  resource_group_name   = data.azurerm_resource_group.mate.name
-  private_dns_zone_name = azurerm_private_dns_zone.file.name
+  private_dns_zone_id   = azurerm_private_dns_zone.file.id
   virtual_network_id    = data.azurerm_virtual_network.ad_vnet.id
 }
 
