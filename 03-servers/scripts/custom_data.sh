@@ -29,8 +29,17 @@ done
 mount /nfs || true
 mkdir -p /nfs/home
 mkdir -p /nfs/data
+
+# Bind-mount /nfs/home on /home rather than symlinking it: snaps (Firefox)
+# refuse to start when /home is a symlink ("mount --rbind /home ... Permission
+# denied"). Restart snapd so it sees the NFS-backed /home.
 mv /home /home.local
-ln -s /nfs/home /home
+mkdir /home
+echo "/nfs/home /home none bind,_netdev,x-systemd.requires-mounts-for=/nfs 0 0" \
+  >> /etc/fstab
+systemctl daemon-reload
+mount /home
+systemctl restart snapd
 
 # AD join
 az login --identity --allow-no-subscriptions
